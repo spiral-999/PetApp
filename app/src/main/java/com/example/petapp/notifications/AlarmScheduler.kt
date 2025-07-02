@@ -13,6 +13,7 @@ class AlarmScheduler(private val context: Context) {
     private val alarmManager = context.getSystemService(AlarmManager::class.java)
 
     fun schedule(
+        reminderId: Int, // ID único do lembrete
         time: LocalDateTime,
         title: String,
         message: String,
@@ -22,12 +23,12 @@ class AlarmScheduler(private val context: Context) {
             putExtra("notification_title", title)
             putExtra("notification_message", message)
             putExtra("notification_channel", channelId)
+            putExtra("notification_id", reminderId) // Passa o ID para o receiver
         }
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            // Usamos o hashcode da mensagem para um ID "único" para o PendingIntent
-            message.hashCode(),
+            reminderId, // Usa o ID único como Request Code
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
